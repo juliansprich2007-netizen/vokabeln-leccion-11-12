@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vokabeln Lección 11–12</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+/* Layout: one narrow column like a textbook page: header with double red rule, settings, one flashcard, answer buttons, word list */
+:root {
+  --paper: #f4f5f8;
+  --surface: #ffffff;
+  --ink: #1b1f2a;
+  --muted: #5b6273;
+  --line: #dcdfe7;
+  --accent: #c8372d;
+  --good: #1b7a51;
+  --good-soft: #e1f2ea;
+  --again: #9c560c;
+  --again-soft: #fbeedd;
+  --shadow: 0 1px 2px rgb(20 24 36 / .06), 0 10px 28px rgb(20 24 36 / .08);
+  --f-word: "Literata", Georgia, "Times New Roman", serif;
+  --f-ui: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #13151b; --surface: #1c1f28; --ink: #eceef3; --muted: #9ca3b4; --line: #2d313c;
+    --accent: #ff6b5f; --good: #52cc98; --good-soft: #16322a; --again: #f2a756; --again-soft: #382916;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 28px rgb(0 0 0 / .35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #13151b; --surface: #1c1f28; --ink: #eceef3; --muted: #9ca3b4; --line: #2d313c;
+  --accent: #ff6b5f; --good: #52cc98; --good-soft: #16322a; --again: #f2a756; --again-soft: #382916;
+  --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 28px rgb(0 0 0 / .35);
+  color-scheme: dark;
+}
+
+html, body { background: var(--paper); }
+body { color: var(--ink); font-family: var(--f-ui); font-size: 16px; line-height: 1.5; }
+
+.wrap {
+  max-width: 600px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 56px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+/* Header, styled after the book's "VOKABULAR" tab and red double rule */
+.head { display: flex; flex-direction: column; gap: 10px; }
+.head-top { display: flex; align-items: center; gap: 10px; }
+.tab {
+  font-family: var(--f-word); font-size: .78rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted); background: var(--surface); border: 1px solid var(--line); padding: 3px 10px;
+}
+.rule { flex: 1; height: 5px; border-top: 1px solid var(--accent); border-bottom: 1px solid var(--accent); opacity: .75; }
+h1 {
+  margin: 0; font-family: var(--f-word); font-weight: 400; color: var(--accent);
+  font-size: clamp(1.6rem, 6vw, 2.1rem); line-height: 1.15; letter-spacing: .05em; text-transform: uppercase;
+  text-wrap: balance;
+}
+.sub { margin: 0; color: var(--muted); font-size: .92rem; }
+
+/* Settings */
+.settings { display: grid; grid-template-columns: 3fr 2fr; gap: 12px; }
+@media (max-width: 540px) { .settings { grid-template-columns: 1fr; } }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+legend { padding: 0; margin-bottom: 6px; font-size: .74rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.seg {
+  position: relative; display: flex; gap: 3px; padding: 3px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+}
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label {
+  flex: 1; text-align: center; padding: 8px 6px; border-radius: 7px; cursor: pointer;
+  font-size: .9rem; color: var(--muted); white-space: nowrap; user-select: none;
+}
+.seg label:hover { color: var(--ink); }
+.seg input:checked + label { background: var(--ink); color: var(--surface); font-weight: 700; }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Progress */
+.progress { display: flex; flex-direction: column; gap: 6px; }
+.bar { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.fill { height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width .3s ease; }
+.stats { display: flex; justify-content: space-between; gap: 12px; font-size: .86rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Flashcard */
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow);
+  min-height: clamp(250px, 42vh, 340px); padding: 18px 20px; display: flex; flex-direction: column; cursor: pointer;
+}
+.card.is-open { cursor: default; }
+.card-meta { display: flex; justify-content: space-between; gap: 12px; font-size: .74rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+#tag { color: var(--accent); font-family: var(--f-word); }
+.card-body {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; text-align: center; padding-block: 20px; min-width: 0;
+}
+.prompt {
+  font-size: clamp(1.6rem, 6.4vw, 2.35rem); line-height: 1.2; max-width: 100%;
+  text-wrap: balance; overflow-wrap: break-word;
+}
+.answer-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 100%; animation: rise .22s ease-out; }
+.divider { width: 44px; height: 1px; background: var(--line); }
+.answer { font-size: clamp(1.15rem, 4.4vw, 1.45rem); line-height: 1.35; text-wrap: balance; overflow-wrap: break-word; max-width: 100%; }
+.alt { font-size: .9rem; color: var(--muted); }
+.es { font-family: var(--f-word); }
+.hint { margin: 0; font-size: .88rem; color: var(--muted); }
+@keyframes rise { from { opacity: .2; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+/* Buttons */
+.row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 12px; }
+.btn {
+  font: inherit; font-weight: 700; min-height: 54px; padding: 12px 16px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.btn:hover { border-color: var(--muted); }
+.btn:focus-visible, .link:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn-primary { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.btn-primary:hover { border-color: var(--ink); opacity: .92; }
+.btn-again { background: var(--again-soft); color: var(--again); border-color: transparent; }
+.btn-good { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.btn-again:hover { border-color: var(--again); }
+.btn-good:hover { border-color: var(--good); }
+kbd {
+  font-family: var(--f-ui); font-size: .72rem; font-weight: 400; line-height: 1.4;
+  padding: 0 6px; border: 1px solid currentColor; border-radius: 5px; opacity: .6;
+}
+
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; font-size: .86rem; color: var(--muted); }
+.link { font: inherit; background: none; border: 0; padding: 0; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+@media (hover: none) { kbd, .keys { display: none; } }
+
+/* Word list */
+.list { border-top: 1px solid var(--line); padding-top: 14px; }
+summary { cursor: pointer; font-weight: 700; }
+.list h3 {
+  margin: 22px 0 6px; font-family: var(--f-word); font-weight: 400; font-size: 1rem;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--accent);
+}
+.list h3 small { font-family: var(--f-ui); text-transform: none; letter-spacing: 0; color: var(--muted); font-size: .85rem; }
+.list table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.list td { padding: 6px 10px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: break-word; }
+.list td:first-child { width: 48%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .answer-wrap { animation: none; }
+  .fill { transition: none; }
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div class="head-top"><span class="tab">Vokabular</span><span class="rule" aria-hidden="true"></span></div>
+    <h1>Lección 11 y 12</h1>
+    <p class="sub" id="sub">Wortliste S. 286 f.</p>
+  </header>
+
+  <section class="settings" aria-label="Einstellungen">
+    <fieldset>
+      <legend>Lektion</legend>
+      <div class="seg">
+        <input type="radio" name="lesson" id="l-all" value="all"><label for="l-all">Beide</label>
+        <input type="radio" name="lesson" id="l-11" value="11"><label for="l-11">Lección 11</label>
+        <input type="radio" name="lesson" id="l-12" value="12"><label for="l-12">Lección 12</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Abfragen</legend>
+      <div class="seg">
+        <input type="radio" name="dir" id="d-esde" value="es-de"><label for="d-esde">ES → DE</label>
+        <input type="radio" name="dir" id="d-dees" value="de-es"><label for="d-dees">DE → ES</label>
+      </div>
+    </fieldset>
+  </section>
+
+  <div class="progress">
+    <div class="bar"><div class="fill" id="fill"></div></div>
+    <div class="stats"><span id="statKnown"></span><span id="statLeft"></span></div>
+  </div>
+
+  <main class="card" id="card" aria-live="polite">
+    <div class="card-meta"><span id="tag"></span><span id="dirLabel"></span></div>
+    <div class="card-body">
+      <div class="prompt" id="prompt"></div>
+      <div class="answer-wrap" id="answerWrap" hidden>
+        <span class="divider" aria-hidden="true"></span>
+        <div class="answer" id="answer"></div>
+        <div class="alt" id="alt" hidden></div>
+      </div>
+      <p class="hint" id="hint">Erst überlegen, dann aufdecken</p>
+    </div>
+  </main>
+
+  <div class="actions">
+    <div class="row" id="actReveal">
+      <button class="btn btn-primary" id="btnReveal" type="button">Aufdecken <kbd>Leertaste</kbd></button>
+    </div>
+    <div class="row" id="actGrade" hidden>
+      <button class="btn btn-again" id="btnAgain" type="button"><kbd>←</kbd> Nochmal</button>
+      <button class="btn btn-good" id="btnKnow" type="button">Gewusst <kbd>→</kbd></button>
+    </div>
+    <div class="row" id="actDone" hidden>
+      <button class="btn btn-primary" id="btnAll" type="button">Alle nochmal</button>
+      <button class="btn" id="btnMissed" type="button">Nur Fehler üben</button>
+    </div>
+  </div>
+
+  <div class="foot">
+    <button class="link" id="btnShuffle" type="button">Neu mischen und von vorn</button>
+    <span class="keys">Leertaste: aufdecken · ←: nochmal · →: gewusst</span>
+  </div>
+
+  <details class="list" id="list">
+    <summary>Alle Vokabeln anzeigen</summary>
+    <div id="listBody"></div>
+  </details>
+</div>
+
+<script>
+(() => {
+  const L11 = [
+    ["conectar con", "in Kontakt treten, sich in Verbindung setzen"],
+    ["transmitir", "übermitteln"],
+    ["la educación superior", "Hochschulausbildung, Hochschulwesen"],
+    ["el aprendizaje", "(Er)Lernen"],
+    ["acceder a", "Zugang haben zu"],
+    ["la herramienta", "Werkzeug; Tool"],
+    ["modificar las prácticas", "die Vorgehensweise ändern"],
+    ["la práctica", "Verfahren, Praxis"],
+    ["el control", "Kontrolle"],
+    ["la profesión", "Beruf"],
+    ["en teoría", "theoretisch"],
+    ["el currículo", "Studienplan, Studienablauf"],
+    ["en vez de", "anstatt (zu)"],
+    ["actualizarse", "sich auf den neuesten Stand bringen"],
+    ["tanto … como", "sowohl … als auch"],
+    ["no solo … sino también", "nicht nur … sondern auch"],
+    ["el contenido", "Inhalt"],
+    ["evaluar", "bewerten"],
+    ["repensar (ie)", "durchdenken, reflektieren"],
+    ["por este motivo", "aus diesem Grund"],
+    ["el enfoque", "Ansatz, Fokussierung"],
+    ["personalizado/-a", "individuell angepasst, benutzerdefiniert"],
+    ["respetar", "respektieren"],
+    ["el contexto", "Zusammenhang"],
+    ["la terminación", "(Wort-)Endung"],
+    ["futuro/-a", "(zu)künftig"],
+    ["dentro (de)", "innerhalb (von)"],
+    ["a lo mejor", "vielleicht"],
+    ["quizá(s)", "vielleicht"],
+    ["seguramente", "sicherlich"],
+    ["analizar", "analysieren, beurteilen, auswerten"],
+    ["hacer (g) suposiciones", "Vermutungen anstellen"],
+    ["la conferencia", "Konferenz"],
+    ["breve", "kurz"],
+    ["tratar de", "handeln von"],
+    ["afirmar", "behaupten"],
+    ["opinar", "meinen"],
+    ["el espacio", "Raum"],
+    ["el cuestionario", "Fragebogen"],
+    ["diariamente", "täglich"],
+    ["la pila", "Batterie"],
+    ["separar", "trennen, aussortieren"],
+    ["reciclar", "wiederverwerten"],
+    ["el centro comercial", "Einkaufszentrum"],
+    ["estar de moda", "(in) Mode sein"],
+    ["de moda", "modisch, trendy, aktuell"],
+    ["realmente", "in Wirklichkeit, eigentlich"],
+    ["eléctrico/-a", "elektrisch"],
+    ["renovable", "erneuerbar"],
+    ["insostenible", "nicht nachhaltig"],
+    ["revisar", "überprüfen, korrigieren"],
+    ["el consumo", "Verbrauch"],
+    ["utilizar", "benutzen"],
+    ["el recurso", "Ressource"],
+    ["el planeta", "Planet"],
+    ["la Tierra", "Erde"],
+    ["la sostenibilidad", "Nachhaltigkeit"],
+    ["el agua potable (f)", "Trinkwasser"],
+    ["el tratamiento de basuras", "Müllverwertung, Abfallaufbereitung"],
+    ["la ley", "Gesetz"],
+    ["latinoamericano/-a", "lateinamerikanisch"],
+    ["realizar", "durchführen"],
+    ["ejemplar", "musterhaft, vorbildlich"],
+    ["promover (ue)", "fördern"],
+    ["el monedero", "Geldbeutel, Geldbörse"],
+    ["el árbol", "Baum"],
+    ["el/la experto/-a", "Experte/-in, Fachmann/-frau"],
+    ["la nota", "Note"],
+    ["el gobierno", "Regierung"],
+    ["colaborar", "zusammenarbeiten, mitarbeiten"],
+    ["poner (g) un granito de arena", "einen Beitrag leisten, sein Scherflein beitragen"],
+    ["el grano de arena", "Sandkorn"],
+    ["asesorar", "beraten"],
+    ["al menos", "zumindest, immerhin"],
+    ["el/la activista", "Aktivist/in"],
+    ["apoyar", "unterstützen"],
+    ["conciliar", "vereinbaren, in Einklang bringen"],
+    ["el/la pionero/-a", "Pionier/in"],
+    ["negativo/-a", "negativ"],
+    ["la protección", "Schutz"],
+    ["la tortuga", "Schildkröte"],
+    ["atender (ie)", "sich kümmern um, betreuen"],
+    ["la estación", "Jahreszeit"],
+    ["lluvioso/-a", "regnerisch"],
+    ["(el) mayo", "Mai"],
+    ["la iluminación", "Beleuchtung"],
+    ["Nueva York", "New York"],
+    ["residir", "wohnen, ansässig sein"],
+    ["la población", "Bevölkerung"],
+    ["la sede", "Sitz"],
+    ["la Corte Interamericana de Derechos Humanos", "Interamerikanischer Gerichtshof für Menschenrechte"],
+    ["fundado/-a", "gegründet"],
+    ["(el) febrero", "Februar"],
+    ["(el) julio", "Juli"],
+    ["promocionar", "fördern, werben für"],
+    ["basar en", "basieren auf, (sich) stützen auf"],
+    ["el respeto", "Respekt, Achtung"],
+    ["local", "lokal, örtlich, Lokal-"],
+    ["el compromiso", "Engagement, Verpflichtung"],
+    ["el principio", "Prinzip, Grundsatz"],
+    ["el cuidado", "Sorgfalt, Pflege"],
+    ["la promoción", "Förderung"],
+    ["el Fondo Mundial para la Naturaleza", "World Wide Fund for Nature (WWF)"],
+    ["ecoturístico/-a", "Ökotourismus-"],
+    ["construir (y)", "bauen, errichten"],
+    ["la construcción", "Bau"],
+    ["el/la visitante", "Besucher/in"],
+    ["el rancho (LA)", "Ranch, Landgut"],
+    ["el océano", "Ozean"],
+    ["el volcán", "Vulkan"],
+    ["la belleza", "Schönheit"],
+    ["gran(de)", "groß"],
+    ["la variedad", "Vielfalt, Reichhaltigkeit"],
+    ["la biodiversidad", "Artenvielfalt"],
+    ["el valor", "Wert, Wertvorstellung"],
+    ["el lema", "Motto, Devise"],
+    ["la filosofía", "Philosophie"],
+    ["despertar (ie)", "(auf)wecken"],
+    ["la crítica", "Kritik"],
+    ["el/la ambientalista", "Umweltschützer/in, Naturschützer/in"],
+    ["planear", "planen"],
+    ["la fuente", "Brunnen, Quelle"],
+    ["depender de", "abhängen von"],
+    ["de momento", "zur Zeit, derzeit, momentan"],
+    ["la autoridad", "Behörde, Staatsgewalt"],
+    ["asegurar", "versichern"],
+    ["vecino/-a", "benachbart, Nachbar-"],
+    ["el comportamiento", "Verhalten"],
+    ["el/la turista", "Tourist/in"],
+    ["amenazar", "(be)drohen"]
+  ];
+
+  const L12 = [
+    ["la emoción", "Emotion, Gefühl"],
+    ["la impresión", "Eindruck"],
+    ["el/la maratón", "Marathon(lauf)"],
+    ["la carrera", "Lauf, (Wett-)Rennen"],
+    ["el campeonato", "Meisterschaft"],
+    ["el mundial", "Weltmeisterschaft"],
+    ["impresionar", "beeindrucken"],
+    ["decepcionar", "enttäuschen"],
+    ["emocionante", "aufregend"],
+    ["original", "außergewöhnlich"],
+    ["horrible", "schrecklich"],
+    ["el juego", "Spiel"],
+    ["(el) agosto", "August"],
+    ["(el) noviembre", "November"],
+    ["la clave", "Schlüssel(element)"],
+    ["humano/-a", "menschlich, Menschen-"],
+    ["argentino/-a", "argentinisch"],
+    ["federal", "föderativ, Bundes-"],
+    ["la región", "Region, Gebiet"],
+    ["competitivo/-a", "wettbewerbsfähig"],
+    ["la autosuperación", "Selbstüberwindung"],
+    ["respetuoso/-a", "respektvoll"],
+    ["inclusivo/-a", "miteinbeziehend, integrativ"],
+    ["la mejora", "Verbesserung"],
+    ["cualitativo/-a", "qualitativ, Qualitäts-"],
+    ["fuerte", "stark"],
+    ["la unión", "Verbindung, Einigkeit"],
+    ["el compañerismo", "Kameradschaftssinn"],
+    ["anual", "jährlich, Jahres-"],
+    ["la disciplina", "Disziplin"],
+    ["el ajedrez", "Schach"],
+    ["el atletismo", "Leichtathletik"],
+    ["el básquetbol (LA)", "Basketball"],
+    ["el futsal (LA)", "Hallenfußball"],
+    ["el balonmano", "Handball"],
+    ["la natación", "Schwimmen"],
+    ["el judo", "Judo"],
+    ["el rugby", "Rugby"],
+    ["el tenis de mesa", "Tischtennis"],
+    ["el voley (LA)", "Volleyball"],
+    ["el baloncesto", "Basketball"],
+    ["el fútbol sala", "Hallenfußball"],
+    ["el voleibol", "Volleyball"],
+    ["la pelota", "Ball"],
+    ["acuático/-a", "Wasser-"],
+    ["deportivo/-a", "sportlich, Sport-"],
+    ["regularmente", "regelmäßig"],
+    ["el/la deportista", "Sportler/in"],
+    ["la coordinación", "Koordination"],
+    ["la caloría", "Kalorie"],
+    ["la impersonalidad", "Unpersönlichkeit"],
+    ["el argumento", "Argument"],
+    ["animar", "anregen, animieren"],
+    ["previo/-a", "vorherig"],
+    ["la pérdida", "Verlust"],
+    ["el peso", "Gewicht"],
+    ["la diversión", "Spaß, Vergnügen"],
+    ["seguir (i)", "(ver)folgen"],
+    ["la fecha", "Datum"],
+    ["la leyenda", "Legende"],
+    ["la biografía", "Biografie"],
+    ["la estrella", "Star"],
+    ["el patinaje", "Eiskunstlauf"],
+    ["el palmarés", "Siegerliste"],
+    ["ponerse (g)", "sich etw. anziehen"],
+    ["el patín", "Schlittschuh"],
+    ["patinar", "Schlittschuh laufen"],
+    ["gran(de)", "großartig"],
+    ["a mediados de", "Mitte"],
+    ["el/la adolescente", "Jugendliche/r, Teenager"],
+    ["seleccionar", "auswählen"],
+    ["el/la expatinador/a", "ehemalige/r Eiskunstläufer/in"],
+    ["ruso/-a", "russisch"],
+    ["entrenar", "trainieren"],
+    ["Nueva Jersey", "New Jersey"],
+    ["sin dudarlo", "ohne zu zögern"],
+    ["complicarse", "kompliziert werden"],
+    ["Estonia", "Estland"],
+    ["la federación", "Verband, Föderation"],
+    ["desde hace", "seit (+ Zeitraum)"],
+    ["Canadá", "Kanada"],
+    ["artístico/-a", "künstlerisch"],
+    ["los (años) ochenta", "die Achtzigerjahre"],
+    ["recompensar", "belohnen"],
+    ["el esfuerzo", "Anstrengung"],
+    ["competir (i)", "wetteifern, im Wettkampf stehen"],
+    ["europeo/-a", "europäisch"],
+    ["la posición", "Stellung"],
+    ["todo un éxito", "ein voller Erfolg"],
+    ["los Juegos Olímpicos", "Olympische Spiele"]
+  ];
+
+  const VOCAB = [];
+  L11.forEach(([es, de]) => VOCAB.push({ l: 11, es, de }));
+  L12.forEach(([es, de]) => VOCAB.push({ l: 12, es, de }));
+  VOCAB.forEach(v => { v.id = v.l + "|" + v.es; });
+  const byId = new Map(VOCAB.map(v => [v.id, v]));
+
+  // Spanish words that share the same German meaning (shown as "auch: …" in DE → ES)
+  const sameDe = new Map();
+  VOCAB.forEach(v => {
+    const k = v.de.toLowerCase();
+    if (!sameDe.has(k)) sameDe.set(k, []);
+    sameDe.get(k).push(v);
+  });
+
+  const $ = id => document.getElementById(id);
+  const KEY = "vokabeln-l11-12";
+  const S = { lesson: "all", dir: "es-de", queue: [], total: 0, known: 0, missed: [], revealed: false };
+
+  function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function poolIds() {
+    return VOCAB.filter(v => S.lesson === "all" || String(v.l) === S.lesson).map(v => v.id);
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  }
+  function loadSaved() {
+    try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; }
+  }
+  function valid(d) {
+    return !!d && Array.isArray(d.queue) && d.queue.every(id => byId.has(id)) &&
+      Array.isArray(d.missed) && d.missed.every(id => byId.has(id)) &&
+      ["all", "11", "12"].includes(d.lesson) && ["es-de", "de-es"].includes(d.dir) &&
+      Number.isFinite(d.total) && Number.isFinite(d.known) && d.total > 0;
+  }
+
+  function newSession(ids) {
+    S.queue = shuffle((ids || poolIds()).slice());
+    S.total = S.queue.length;
+    S.known = 0;
+    S.missed = [];
+    S.revealed = false;
+    render();
+  }
+
+  function reveal() {
+    if (S.queue.length && !S.revealed) { S.revealed = true; render(); }
+  }
+
+  function grade(ok) {
+    if (!S.revealed || !S.queue.length) return;
+    const id = S.queue.shift();
+    if (ok) {
+      S.known++;
+    } else {
+      if (!S.missed.includes(id)) S.missed.push(id);
+      // put it back a few cards later so it comes up again soon
+      const pos = Math.min(S.queue.length, 5 + Math.floor(Math.random() * 4));
+      S.queue.splice(pos, 0, id);
+    }
+    S.revealed = false;
+    render();
+  }
+
+  function setText(el, text, lang) {
+    el.textContent = text;
+    el.lang = lang;
+    el.classList.toggle("es", lang === "es");
+  }
+
+  function render() {
+    $("l-" + S.lesson).checked = true;
+    $(S.dir === "es-de" ? "d-esde" : "d-dees").checked = true;
+
+    $("fill").style.width = (S.total ? (S.known / S.total) * 100 : 0) + "%";
+    $("statKnown").textContent = `${S.known} von ${S.total} gewusst`;
+    const left = S.queue.length;
+    $("statLeft").textContent = left ? `noch ${left} ${left === 1 ? "Karte" : "Karten"}` : "fertig";
+
+    const done = left === 0;
+    $("card").classList.toggle("is-open", S.revealed || done);
+    $("actReveal").hidden = done || S.revealed;
+    $("actGrade").hidden = done || !S.revealed;
+    $("actDone").hidden = !done;
+
+    if (done) {
+      const first = S.total - S.missed.length;
+      $("tag").textContent = "Fertig";
+      $("dirLabel").textContent = "";
+      setText($("prompt"), "¡Muy bien!", "es");
+      setText($("answer"), `Alle ${S.total} Karten gewusst, ${first} davon beim ersten Versuch.`, "de");
+      $("alt").hidden = true;
+      $("answerWrap").hidden = false;
+      $("hint").hidden = true;
+      $("btnMissed").hidden = S.missed.length === 0;
+      $("btnMissed").textContent = `Nur Fehler üben (${S.missed.length})`;
+    } else {
+      const v = byId.get(S.queue[0]);
+      const esFirst = S.dir === "es-de";
+      $("tag").textContent = "Lección " + v.l;
+      $("dirLabel").textContent = esFirst ? "Español → Deutsch" : "Deutsch → Español";
+      setText($("prompt"), esFirst ? v.es : v.de, esFirst ? "es" : "de");
+      setText($("answer"), esFirst ? v.de : v.es, esFirst ? "de" : "es");
+      const others = esFirst ? [] : sameDe.get(v.de.toLowerCase()).filter(o => o !== v).map(o => o.es);
+      $("alt").hidden = others.length === 0;
+      $("alt").textContent = others.length ? "auch: " + others.join(", ") : "";
+      $("answerWrap").hidden = !S.revealed;
+      $("hint").hidden = S.revealed;
+    }
+    save();
+  }
+
+  function buildList() {
+    const box = $("listBody");
+    [[11, L11], [12, L12]].forEach(([n, arr]) => {
+      const h = document.createElement("h3");
+      h.innerHTML = `Lección ${n} <small>· ${arr.length} Wörter</small>`;
+      const tbl = document.createElement("table");
+      arr.forEach(([es, de]) => {
+        const tr = tbl.insertRow();
+        const a = tr.insertCell(); a.className = "es"; a.lang = "es"; a.textContent = es;
+        const b = tr.insertCell(); b.lang = "de"; b.textContent = de;
+      });
+      box.append(h, tbl);
+    });
+    $("sub").textContent = `Wortliste S. 286 f. · ${VOCAB.length} Wörter`;
+  }
+
+  // Events
+  $("card").addEventListener("click", reveal);
+  $("btnReveal").addEventListener("click", reveal);
+  $("btnAgain").addEventListener("click", () => grade(false));
+  $("btnKnow").addEventListener("click", () => grade(true));
+  $("btnAll").addEventListener("click", () => newSession());
+  $("btnMissed").addEventListener("click", () => newSession(S.missed));
+  $("btnShuffle").addEventListener("click", () => newSession());
+  document.querySelectorAll('input[name="lesson"]').forEach(r =>
+    r.addEventListener("change", () => { S.lesson = r.value; newSession(); }));
+  document.querySelectorAll('input[name="dir"]').forEach(r =>
+    r.addEventListener("change", () => { S.dir = r.value; S.revealed = false; render(); }));
+
+  // After a mouse/touch click, drop focus so Space and the arrow keys always control the card
+  document.addEventListener("click", e => {
+    if (e.detail > 0) setTimeout(() => {
+      const a = document.activeElement;
+      if (a && a !== document.body && a.blur) a.blur();
+    }, 0);
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target;
+    if (t.closest && t.closest("input, textarea, select")) return;
+    const k = e.key;
+    if ((k === "ArrowLeft" || k === "1") && S.revealed && S.queue.length) { e.preventDefault(); grade(false); return; }
+    if ((k === "ArrowRight" || k === "2") && S.revealed && S.queue.length) { e.preventDefault(); grade(true); return; }
+    if ((k === " " || k === "Enter") && !(t.closest && t.closest("button, summary, a"))) {
+      if (S.queue.length && !S.revealed) { e.preventDefault(); reveal(); }
+    }
+  });
+
+  function start(data) {
+    buildList();
+    const d = valid(data) ? data : loadSaved();
+    if (valid(d)) {
+      Object.assign(S, {
+        lesson: d.lesson, dir: d.dir, queue: d.queue.slice(), total: d.total,
+        known: d.known, missed: d.missed.slice(), revealed: !!d.revealed
+      });
+      render();
+    } else {
+      newSession();
+    }
+  }
+
+  window.claude?.hot?.snapshot?.(() => JSON.parse(JSON.stringify(S)));
+  window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
+</body>
+</html>
